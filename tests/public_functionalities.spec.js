@@ -17,6 +17,13 @@ test.describe('Homepage Functionalities', () => {
     expect(pageTitle).toContain('SLA TMS'); // Add an assertion to verify the page title
   });
 
+  test('Success Story', async ({ page }) => {
+    await page.locator("#slider-button-left").click();
+    await page.locator("#slider-button-right").click();
+    console.log('Success Story Slider is Functional');
+    
+  });
+
   // Test: Explore Trainings button functionality
   test('Explore Trainings', async ({ page }) => {
     await page.getByRole('button', { name: 'Explore Trainings' }).click();
@@ -54,5 +61,20 @@ test.describe('Homepage Functionalities', () => {
     await page.getByRole('link', { name: 'Hire and Train' }).click();
     await expect(page).toHaveURL(/.*hat-training/);
   });
-
+  test('Check Certificate Varification (Invalid Response)', async ({ page }) => {
+    await page.getByRole('link', { name: 'Verify Certificate' }).click();
+    await expect(page).toHaveURL(/.*certificate-validation/);
+    await page.locator('#certificate_no').fill('abcdxyz123')
+    await page.getByRole('button', { name: 'Verify' }).click();
+    const resultMessage = page.locator('text=Certificate Verification Unsuccessful');
+    await expect(resultMessage).toHaveText('Certificate Verification Unsuccessful')
+  });
+  test('Check Govt Certificate Varification (Valid Response)', async ({ page }) => {
+    await page.getByRole('link', { name: 'Verify Certificate' }).click();
+    await expect(page).toHaveURL(/.*certificate-validation/);
+    await page.locator('#certificate_no').fill('EDGE-GOVT-4-0030-00001')
+    await page.getByRole('button', { name: 'Verify' }).click();
+    const resultMessage = page.locator('text=Certificate Verification Successful');
+    await expect(resultMessage).toHaveText('Certificate Verification Successful')
+  });
 });
